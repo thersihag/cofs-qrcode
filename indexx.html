@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FISHERS BUSINESS MANAGEMENT AND ENTREPRENEURSHIP DEVELOPER</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Very light cool grey */
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensure body takes full viewport height */
+        }
+        /* Sticky Header */
+        header {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 20;
+            background-color: #1a202c; /* Ensure solid background for sticky header */
+        }
+        /* Main content area, adjusted for fixed header and footer */
+        main {
+            flex-grow: 1; /* Allow main content to grow and push footer down */
+            padding-bottom: 72px; /* Default for mobile (with bottom nav) */
+        }
+        /* Media query for desktop: adjust main padding and width */
+        @media (min-width: 768px) {
+            main {
+                padding-bottom: 20px; /* Reduced padding for desktop when bottom nav is hidden */
+                max-width: 900px; /* Constrain content width on larger screens for app-like feel */
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+        /* Custom scroll-to-reveal styles */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Modal specific styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* Darker, more opaque overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: 1.25rem; /* Even more rounded */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+            position: relative;
+            max-width: 90%;
+            width: 400px;
+            max-height: 90%;
+            overflow-y: auto;
+            transform: scale(0.7); /* Start even smaller */
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Springy effect */
+        }
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+        .close-button {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: none;
+            border: none;
+            font-size: 2.25rem; /* Larger close button */
+            cursor: pointer;
+            color: #666;
+            transition: color 0.2s;
+        }
+        .close-button:hover {
+            color: #333;
+        }
+        /* Bottom navigation bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1a202c; /* Dark background */
+            border-top: 1px solid #2d3748; /* Subtle top border */
+            z-index: 500;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 64px; /* Fixed height for app-like feel */
+            padding: 0 8px; /* Small padding */
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
+        }
+        /* Hide bottom nav on desktop */
+        @media (min-width: 768px) {
+            .bottom-nav {
+                display: none;
+            }
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #a0aec0; /* Light grey text */
+            font-size: 0.75rem; /* Small font size */
+            font-weight: 500;
+            text-decoration: none;
+            padding: 8px 4px; /* Tighter padding */
+            border-radius: 0.5rem;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            flex: 1; /* Distribute space evenly */
+            max-width: 90px; /* Max width for each item on larger mobiles */
+        }
+        .bottom-nav-item:hover, .bottom-nav-item.active {
+            color: #6ee7b7; /* Teal accent on hover/active */
+            background-color: rgba(100, 100, 100, 0.2); /* Subtle highlight */
+        }
+        .bottom-nav-item svg {
+            margin-bottom: 4px; /* Space between icon and text */
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Styling for the central nav item */
+        .bottom-nav-item.center-item {
+            background-color: #fff; /* White background */
+            color: #1a202c; /* Dark text/icon color */
+            border-radius: 50%; /* Make it a circle */
+            width: 56px; /* Fixed width for circle */
+            height: 56px; /* Fixed height for circle */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: -24px; /* Lift it above the bar */
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3); /* Stronger shadow */
+            transition: transform 0.2s ease-out;
+        }
+
+        .bottom-nav-item.center-item:hover {
+            transform: scale(1.1); /* Slightly enlarge on hover */
+            background-color: #fff; /* Keep white on hover */
+        }
+        .bottom-nav-item.center-item svg {
+            color: #6ee7b7; /* Teal icon color */
+            margin-bottom: 0; /* No margin for centered icon */
+        }
+
+        /* Accordion styles */
+        details {
+            background-color: #fff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1rem;
+            overflow: hidden; /* For smooth border-radius */
+            transition: all 0.3s ease;
+        }
+
+        details[open] {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        summary {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            color: #1a202c; /* Dark text for summary */
+            position: relative;
+            list-style: none; /* Remove default marker */
+        }
+        summary::-webkit-details-marker {
+            display: none; /* Hide default marker for webkit browsers */
+        }
+        summary::after {
+            content: '';
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-left: auto;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: transform 0.3s ease;
+        }
+
+        details[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            padding: 0 1.25rem 1.25rem 1.25rem;
+            color: #4a5568; /* Slightly darker grey for content */
+            border-top: 1px solid #edf2f7; /* Light border between summary and content */
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .accordion-content ul {
+            padding-left: 1.5rem;
+        }
+        .accordion-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Table styles */
+        .app-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        .app-table th, .app-table td {
+            border: 1px solid #e2e8f0; /* light-gray border */
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .app-table th {
+            background-color: #edf2f7; /* lighter-gray header */
+            font-weight: 600;
+            color: #2d3748; /* dark grey text */
+        }
+        .app-table tbody tr:nth-child(even) {
+            background-color: #f7fafc; /* alternating row color */
+        }
+
+        /* Progress bar styles */
+        .progress-container {
+            width: 100%;
+            background-color: #e2e8f0; /* light background */
+            border-radius: 9999px; /* fully rounded */
+            height: 12px; /* fixed height */
+            margin-top: 1rem;
+            overflow: hidden; /* ensures bar stays within bounds */
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%; /* initial width */
+            background-color: #6ee7b7; /* teal color */
+            border-radius: 9999px; /* fully rounded */
+            transition: width 1s ease-in-out; /* smooth transition */
+        }
+
+        /* Chips/Badges */
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            background-color: #6ee7b7; /* Teal background */
+            color: #1a202c; /* Dark text */
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px; /* Fully rounded */
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Desktop Menu Dropdown Styles */
+        .desktop-menu-dropdown {
+            position: absolute;
+            top: 100%; /* Position below the header */
+            right: 1rem; /* Align with the menu button */
+            background-color: #2d3748; /* Darker background */
+            border-radius: 0.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            min-width: 180px;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out;
+        }
+        .desktop-menu-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .desktop-menu-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #a0aec0; /* Light grey text */
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .desktop-menu-item:hover {
+            background-color: #4a5568; /* Darker hover */
+            color: #6ee7b7; /* Teal hover text */
+        }
+        .desktop-menu-item svg {
+            margin-right: 0.75rem;
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body class="selection:bg-teal-200">
+    <header class="bg-gradient-to-r from-gray-900 to-gray-700 text-white py-5 shadow-xl">
+        <div class="container mx-auto px-4 flex items-center justify-between relative">
+            <!-- App Logo/Name on Left -->
+            <div class="flex items-center">
+                <i data-lucide="fish" class="w-8 h-8 mr-2 text-teal-400"></i>
+                <h1 class="text-xl sm:text-2xl font-extrabold tracking-wide">FBME</h1>
+            </div>
+            <!-- Key Action/Menu Icon on Right (visible on desktop, hidden on mobile) -->
+            <button id="topMenuButton" class="text-white focus:outline-none p-2 rounded-lg hover:bg-gray-700 transition duration-200 hidden md:block">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+            <!-- Desktop Menu Dropdown -->
+            <div id="desktopMenuDropdown" class="desktop-menu-dropdown">
+                <a href="#section1" class="desktop-menu-item" data-nav-section="section1">
+                    <i data-lucide="home"></i> Home
+                </a>
+                <a href="#" class="desktop-menu-item" id="openScannerModalFromDesktopMenu">
+                    <i data-lucide="scan"></i> About Scanner
+                </a>
+                <a href="#section-institutes" class="desktop-menu-item" data-nav-section="section-institutes">
+                    <i data-lucide="building"></i> Institutes
+                </a>
+                <a href="#section6" class="desktop-menu-item" data-nav-section="section6">
+                    <i data-lucide="dollar-sign"></i> Finance
+                </a>
+                <a href="#" class="desktop-menu-item" id="openDesignerModalFromDesktopMenu">
+                    <i data-lucide="info"></i> About Us
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative bg-cover bg-center h-72 md:h-96 lg:h-112 flex items-center justify-center text-white text-center shadow-lg"
+        style="background-image: url('https://placehold.co/1920x600/2F4F4F/FFFFFF?text=Innovation+in+Aquaculture');">
+        <div class="absolute inset-0 bg-gray-900 opacity-65 rounded-b-lg"></div>
+        <div class="relative z-10 p-4">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">Empowering Aqua-Entrepreneurs</h2>
+            <p class="text-lg md:text-xl lg:text-2xl max-w-2xl mx-auto opacity-90">
+                Unlock potential and foster innovation in the sustainable fisheries sector.
+            </p>
+            <button class="mt-6 px-8 py-4 bg-teal-500 text-white font-semibold rounded-full shadow-lg hover:bg-teal-600 transition duration-300 transform hover:scale-105 active:scale-95 text-lg">
+                Explore Programs
+            </button>
+        </div>
+    </section>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8 mt-4 md:mt-8"> <!-- Reduced top margin for tighter feel -->
+        <!-- Section 1: Course Overview - Always visible initially -->
+        <section id="section1" class="bg-white rounded-xl shadow-xl p-5 sm:p-6 mb-6 transform hover:scale-[1.005] transition duration-300 ease-in-out border border-gray-100"> <!-- Tighter padding/margin -->
+            <h3 class="text-2xl font-bold text-teal-600 mb-4 flex items-center">
+                <i data-lucide="book-open" class="mr-3 w-7 h-7 text-teal-500"></i> Course Overview
+            </h3>
+            <div class="space-y-4 text-gray-700 text-base"> <!-- Base font size for readability -->
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Introduction to Entrepreneurship in the Fisheries Sector</h4>
+                    <p class="leading-relaxed">
+                        Entrepreneurship involves identifying opportunities, taking calculated risks, mobilizing resources, and creating value through innovative business ventures. In the fisheries sector, this includes fish farming, hatchery management, ornamental fish trade, fish processing, and marketing.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Importance of Business Management in Fisheries Enterprises</h4>
+                    <p class="leading-relaxed">
+                        Efficient business management ensures sustainable production, market competitiveness, and profitability. It involves strategic planning, budgeting, market analysis, human resource management, and supply chain coordination.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Understanding Entrepreneurship -->
+        <section id="section2" class="reveal-on-scroll bg-white rounded-xl shadow-xl p-5 sm:p-6 mb-6 transform hover:scale-[1.005] transition duration-300 ease-in-out border border-gray-100">
+            <h3 class="text-2xl font-bold text-teal-600 mb-4 flex items-center">
+                <i data-lucide="lightbulb" class="mr-3 w-7 h-7 text-teal-500"></i> Understanding Entrepreneurship
+            </h3>
+            <div class="space-y-4 text-gray-700 text-base">
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Concept of Entrepreneurship</h4>
+                    <p class="leading-relaxed">
+                        Entrepreneurship is the process of starting and running a new business with the aim of making a profit while addressing consumer needs. In fisheries, it includes developing innovative business models in aquaculture, processing, and input services.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Characteristics of Entrepreneurs & Managers</h4>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li><strong>Entrepreneurs:</strong> Visionary, innovative, willing to take risks, proactive</li>
+                        <li><strong>Managers:</strong> Organize, coordinate, and lead operations for efficiency and growth</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Risk-taking, Innovation, Leadership, Decision-making</h4>
+                    <p class="leading-relaxed">
+                        Successful fisheries entrepreneurs are known for:
+                    </p>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li><strong>Risk-taking:</strong> Investing in untested markets or new techniques</li>
+                        <li><strong>Innovation:</strong> Introducing new species, eco-friendly systems, or tech solutions</li>
+                        <li><strong>Leadership:</strong> Guiding teams and building partnerships</li>
+                        <li><strong>Decision-making:</strong> Choosing the right production or marketing strategy</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Entrepreneurial Motivation and Development</h4>
+                    <p class="leading-relaxed">
+                        Understanding what drives an entrepreneur—whether it's financial gain, independence, or social impact—is crucial. Entrepreneurial Development Programs (EDPs) help enhance these skills and motivations through structured training.
+                    </p>
+                    <div class="mt-4">
+                        <p class="text-sm font-semibold text-gray-600 mb-2">Entrepreneurial Journey Progress (Conceptual)</p>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 75%;"></div>
+                        </div>
+                        <p class="text-xs text-gray-500 text-right mt-1">75% Completed</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Enterprise Management -->
+        <section id="section3" class="reveal-on-scroll bg-white rounded-xl shadow-xl p-5 sm:p-6 mb-6 transform hover:scale-[1.005] transition duration-300 ease-in-out border border-gray-100">
+            <h3 class="text-2xl font-bold text-teal-600 mb-4 flex items-center">
+                <i data-lucide="settings" class="mr-3 w-7 h-7 text-teal-500"></i> Enterprise Management
+            </h3>
+            <div class="space-y-4 text-gray-700 text-base">
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Managing an Enterprise</h4>
+                    <p class="leading-relaxed">
+                        This involves day-to-day decision-making, team leadership, quality control, resource allocation, and customer relationship management. In fisheries, this could mean managing a hatchery, feed distribution business, or fish retail outlet.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Planning, Organizing, Staffing, Directing, Controlling</h4>
+                    <p class="leading-relaxed">
+                        These five functions of management ensure that the business runs smoothly:
+                    </p>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li><strong>Planning:</strong> Setting goals and choosing the means to achieve them</li>
+                        <li><strong>Organizing:</strong> Structuring tasks and assigning roles</li>
+                        <li><strong>Staffing:</strong> Hiring and training human resources</li>
+                        <li><strong>Directing:</strong> Leading and motivating the team</li>
+                        <li><strong>Controlling:</strong> Monitoring progress and making corrections</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Importance of Planning, Monitoring, Evaluation & Follow-Up</h4>
+                    <p class="leading-relaxed">
+                        Effective entrepreneurship requires tracking performance regularly:
+                    </p>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li><strong>Planning</strong> sets the direction</li>
+                        <li><strong>Monitoring</strong> ensures progress</li>
+                        <li><strong>Evaluation</strong> checks outcomes against goals</li>
+                        <li><strong>Follow-up</strong> identifies lessons for improvement</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Managing Competition in Fisheries Business</h4>
+                    <p class="leading-relaxed">
+                        This involves analyzing competitors, adopting differentiation strategies (e.g., organic certification, branding), and offering better quality, prices, or services.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Innovation & Business Creation -->
+        <section id="section4" class="reveal-on-scroll bg-white rounded-xl shadow-xl p-5 sm:p-6 mb-6 transform hover:scale-[1.005] transition duration-300 ease-in-out border border-gray-100">
+            <h3 class="text-2xl font-bold text-teal-600 mb-4 flex items-center">
+                <i data-lucide="rocket" class="mr-3 w-7 h-7 text-teal-500"></i> Innovation & Business Creation
+            </h3>
+            <div class="space-y-4 text-gray-700 text-base">
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Idea Generation, Incubation & Commercialization</h4>
+                    <p class="leading-relaxed">
+                        Entrepreneurial ideas must be tested for feasibility:
+                    </p>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li><strong>Idea Generation:</strong> Based on market demand or local resource potential</li>
+                        <li><strong>Incubation:</strong> Support through labs, pilot runs, and mentoring</li>
+                        <li><strong>Commercialization:</strong> Scaling up for market entry and profit</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Hatchery Innovations, Feed Technologies, Digital Marketing in Fisheries</h4>
+                    <p class="leading-relaxed">
+                        Examples of innovation:
+                    </p>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li>Biofloc systems or RAS hatcheries</li>
+                        <li>High-quality or medicated feeds</li>
+                        <li>Using social media and online platforms to sell fish products</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Entrepreneurship Development Programs (EDPs)</h4>
+                    <p class="leading-relaxed">
+                        Organized by government or universities to:
+                    </p>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li>Train aspiring entrepreneurs</li>
+                        <li>Provide mentorship and technical support</li>
+                        <li>Facilitate funding and networking opportunities</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Government Support & Policies -->
+        <section id="section5" class="reveal-on-scroll bg-white rounded-xl shadow-xl p-5 sm:p-6 mb-6 transform hover:scale-[1.005] transition duration-300 ease-in-out border border-gray-100">
+            <h3 class="text-2xl font-bold text-teal-600 mb-4 flex items-center">
+                <i data-lucide="landmark" class="mr-3 w-7 h-7 text-teal-500"></i> Government Support & Policies
+            </h3>
+            <div class="space-y-4 text-gray-700 text-base">
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Government Schemes and Incentives</h4>
+                    <p class="leading-relaxed">
+                        Key schemes promoting fisheries entrepreneurship:
+                    </p>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li><strong>PMMSY (Pradhan Mantri Matsya Sampada Yojana)</strong> – infrastructure, input subsidy</li>
+                        <li><strong>MUDRA Yojana</strong> – micro-financing</li>
+                        <li><strong>Startup India</strong> – support for innovation-led enterprises</li>
+                        <li><strong>Kisan Credit Card (KCC)</strong> – working capital support for fishers and farmers</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Policy on SMEs / SSIs</h4>
+                    <p class="leading-relaxed">
+                        Small and Medium Enterprises (SMEs) get easier loan access, tax benefits, and training. Special focus on rural and coastal aquapreneurs under government policy frameworks.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Public-Private Partnerships, Contract Farming & Joint Ventures</h4>
+                    <p class="leading-relaxed">
+                        Partnerships for joint infrastructure and tech development (e.g., hatcheries or cold chains), contract farming for market tie-ups, and joint ventures leveraging capital and expertise.
+                    </p>
+                </div>
+
+                <div class="mt-6">
+                    <h4 class="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                        <i data-lucide="table" class="mr-2 w-6 h-6 text-gray-600"></i> Key Schemes & Support
+                    </h4>
+                    <div class="overflow-x-auto rounded-lg shadow-sm"> <!-- Added overflow-x-auto for mobile tables -->
+                        <table class="app-table">
+                            <thead>
+                                <tr>
+                                    <th>Scheme/Institution</th>
+                                    <th>Focus Area</th>
+                                    <th>Benefit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>PMMSY</td>
+                                    <td>Fisheries & Aquaculture</td>
+                                    <td>Infrastructure, Subsidies</td>
+                                </tr>
+                                <tr>
+                                    <td>MUDRA Yojana</td>
+                                    <td>Micro Enterprises</td>
+                                    <td>Micro-financing</td>
+                                </tr>
+                                <tr>
+                                    <td>Startup India</td>
+                                    <td>Innovation-led ventures</td>
+                                    <td>Funding, Mentorship, Tax benefits</td>
+                                </tr>
+                                <tr>
+                                    <td>NABARD</td>
+                                    <td>Rural Development</td>
+                                    <td>Credit, Refinance, Training</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Financial Aspects -->
+        <section id="section6" class="reveal-on-scroll bg-white rounded-xl shadow-xl p-5 sm:p-6 mb-6 transform hover:scale-[1.005] transition duration-300 ease-in-out border border-gray-100">
+            <h3 class="text-2xl font-bold text-teal-600 mb-4 flex items-center">
+                <i data-lucide="dollar-sign" class="mr-3 w-7 h-7 text-teal-500"></i> Financial Aspects
+            </h3>
+            <div class="space-y-4 text-gray-700 text-base">
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Enterprise Budgeting</h4>
+                    <p class="leading-relaxed">
+                        Preparing a detailed financial plan for setting up and running a fisheries enterprise. Includes:
+                    </p>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li>Cost of pond construction, seed, feed, labor, utilities</li>
+                        <li>Expected revenue from fish sales</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Budget Preparation for Integrated Fish Farming</h4>
+                    <p class="leading-relaxed">
+                        Integrated systems (e.g., fish + poultry + horticulture) enhance resource use efficiency and profitability. Budgeting includes cost-benefit analysis of each component.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Infrastructure & Financial Requirements</h4>
+                    <p class="leading-relaxed">
+                        Includes:
+                    </p>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li>Hatcheries, nurseries, aeration systems</li>
+                        <li>Ice plants, processing units, cold storage, transport</li>
+                        <li>Sources: NABARD, fisheries departments, banks</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Fiscal and Monetary Policies and Their Impact</h4>
+                    <p class="leading-relaxed">
+                        Government taxation, interest rates, and lending norms affect:
+                    </p>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li>Investment in fisheries ventures</li>
+                        <li>Profitability and sustainability of business</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold text-gray-800 mb-2">Venture Capital & Financial Institutions</h4>
+                    <ul class="list-disc list-inside pl-4 space-y-1">
+                        <li><strong>Venture Capital:</strong> Funding support for innovative startups</li>
+                        <li><strong>Institutions:</strong> NABARD, NFDB, SIDBI, MPEDA, cooperative banks</li>
+                    </ul>
+                    <p class="leading-relaxed">
+                        They provide credit, subsidies, insurance, and technical support to entrepreneurs.
+                    </p>
+                </div>
+                <div class="bg-teal-50 border-l-4 border-teal-500 text-teal-800 p-4 rounded-md mt-6">
+                    <p class="font-bold flex items-center">
+                        <i data-lucide="bookmark" class="mr-2 w-6 h-6 text-teal-600"></i> Key Takeaway
+                    </p>
+                    <p class="text-teal-700 leading-relaxed mt-2">
+                        Empowered with entrepreneurial and managerial skills, students can become successful aqua-preneurs and contribute to India’s fisheries growth and the Blue Economy.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Entrepreneurship Development Institutes in India -->
+        <section id="section-institutes" class="reveal-on-scroll bg-white rounded-xl shadow-xl p-5 sm:p-6 mb-6 transform hover:scale-[1.005] transition duration-300 ease-in-out border border-gray-100">
+            <h3 class="text-2xl font-bold text-teal-600 mb-4 flex items-center">
+                <i data-lucide="award" class="mr-3 w-7 h-7 text-teal-500"></i> Top Entrepreneurship Development Institutes in India
+            </h3>
+            <div class="space-y-4 text-gray-700 text-base">
+                <details class="accordion-item">
+                    <summary>
+                        <i data-lucide="building-2" class="mr-2 w-6 h-6 text-gray-600"></i>
+                        National-Level Institutes
+                    </summary>
+                    <div class="accordion-content">
+                        <ul class="list-disc list-inside pl-4 space-y-2">
+                            <li>
+                                <strong>National Institute for Entrepreneurship and Small Business Development (NIESBUD)</strong> – Noida, Uttar Pradesh
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Under Ministry of Skill Development and Entrepreneurship (MSDE)</li>
+                                    <li>Offers training, EDPs, and research</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Indian Institute of Entrepreneurship (IIE)</strong> – Guwahati, Assam
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Focuses on entrepreneurship promotion in the North Eastern Region</li>
+                                    <li>Offers skill training, incubation, and research</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Entrepreneurship Development Institute of India (EDII)</strong> – Gandhinagar, Gujarat
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Autonomous body under Dept. of Science and Technology</li>
+                                    <li>Offers PGDM in Entrepreneurship, EDPs, and research</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Atal Innovation Mission (AIM)</strong> – NITI Aayog, New Delhi
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>National platform promoting innovation & entrepreneurship</li>
+                                    <li>Operates Atal Incubation Centers (AICs)</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>National Innovation Foundation (NIF)</strong> – Ahmedabad, Gujarat
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Promotes grassroots innovations and incubation</li>
+                                    <li>Supports rural and traditional sector entrepreneurs</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="accordion-item">
+                    <summary>
+                        <i data-lucide="fish" class="mr-2 w-6 h-6 text-gray-600"></i>
+                        Agriculture and Fisheries-Focused Institutions
+                    </summary>
+                    <div class="accordion-content">
+                        <ul class="list-disc list-inside pl-4 space-y-2">
+                            <li>
+                                <strong>MANAGE (National Institute of Agricultural Extension Management)</strong> – Hyderabad, Telangana
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Offers Agri-Clinics and Agri-Business Centres (ACABC) Scheme</li>
+                                    <li>EDPs for agri and allied sector graduates</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>National Fisheries Development Board (NFDB)</strong> – Hyderabad, Telangana
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Promotes entrepreneurship in fisheries & aquaculture</li>
+                                    <li>Supports training, hatchery establishment, cold chain infrastructure</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Krishi Vigyan Kendras (KVKs)</strong> – Across India
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>ICAR-affiliated centers for farmer training & agri-based enterprise support</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Central Institute of Fisheries Education (CIFE)</strong> – Mumbai
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Conducts entrepreneurship training in aquaculture and fisheries value chain</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>CIFT Business Incubation Centre</strong> – Cochin
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Under ICAR-CIFT; promotes fish processing startups and product innovation</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="accordion-item">
+                    <summary>
+                        <i data-lucide="graduation-cap" class="mr-2 w-6 h-6 text-gray-600"></i>
+                        Academic Institutions with Incubators
+                    </summary>
+                    <div class="accordion-content">
+                        <ul class="list-disc list-inside pl-4 space-y-2">
+                            <li>
+                                <strong>Indian Institutes of Technology (IITs)</strong> – Various campuses
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Each has dedicated entrepreneurship cells and incubation centers</li>
+                                    <li>Example: SINE (IIT Bombay), IIT Madras Incubation Cell</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Indian Institutes of Management (IIMs)</strong> – Various campuses
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>IIM Ahmedabad: Centre for Innovation Incubation and Entrepreneurship (CIIE)</li>
+                                    <li>IIM Bangalore: NSRCEL (Nadathur S. Raghavan Centre for Entrepreneurial Learning)</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>TISS Incubation Centre</strong> – Mumbai
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Supports social entrepreneurs and rural innovations</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>National Small Industries Corporation (NSIC)</strong> – Delhi
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Offers Technical Incubation Centre for MSMEs</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="accordion-item">
+                    <summary>
+                        <i data-lucide="trending-up" class="mr-2 w-6 h-6 text-gray-600"></i>
+                        Startup and Innovation Ecosystem Support
+                    </summary>
+                    <div class="accordion-content">
+                        <ul class="list-disc list-inside pl-4 space-y-2">
+                            <li>
+                                <strong>Startup India (GoI Initiative)</strong> – Nationwide
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Provides recognition, funding access, mentorship, and tax exemptions</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>SIDBI (Small Industries Development Bank of India)</strong> – Pan India
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Offers financial support for startups, MSMEs, and women entrepreneurs</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>MSME Development Institutes</strong> – Present in all major states
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Provide training, handholding, and financial linkage for micro and small enterprises</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Rural Self Employment Training Institutes (RSETIs)</strong> – Operated by banks
+                                <ul class="list-[circle] list-inside ml-4">
+                                    <li>Free EDPs for rural youth across agriculture, fisheries, and services</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation Bar (Footnav) -->
+    <nav class="bottom-nav">
+        <a href="#section1" class="bottom-nav-item active" data-nav-section="section1">
+            <i data-lucide="home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="bottom-nav-item" data-nav-section="section-scanner-modal" id="openScannerModalFromBottomNav">
+            <i data-lucide="scan"></i>
+            <span>Scanner</span>
+        </a>
+        <a href="#section4" class="bottom-nav-item center-item" data-nav-section="section4">
+            <i data-lucide="rocket"></i>
+            <!-- No text here for center item -->
+        </a>
+        <a href="#section-institutes" class="bottom-nav-item" data-nav-section="section-institutes">
+            <i data-lucide="building"></i>
+            <span>Institutes</span>
+        </a>
+        <a href="#section6" class="bottom-nav-item" data-nav-section="section6">
+            <i data-lucide="dollar-sign"></i>
+            <span>Finance</span>
+        </a>
+    </nav>
+
+    <!-- Modal for Designer Info -->
+    <div id="designerModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-button" id="closeDesignerModal">&times;</button>
+            <h4 class="text-2xl font-bold text-gray-800 mb-4 text-center">Designed and Managed by:</h4>
+            <div class="flex flex-col items-center">
+                <img src="https://cofs-scanner.onrender.com/parulsihag.jpg" alt="Parul Sihag" class="rounded-full w-32 h-32 object-cover mb-4 shadow-lg">
+                <p class="text-xl font-semibold text-gray-800">Parul Sihag</p>
+                <p class="text-lg text-gray-600">(2022FS11BIV)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Scanner Info -->
+   <div id="scannerInfoModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-button" id="closeScannerInfoModal">×</button>
+        <h4 class="text-2xl font-bold text-gray-800 mb-4 text-center flex items-center justify-center">
+            <i data-lucide="qr-code" class="mr-2 w-7 h-7 text-teal-500"></i> About the Scanner
+        </h4>
+        <div class="space-y-4 text-gray-700 text-base">
+            <p class="leading-relaxed mb-4 font-semibold text-center text-teal-700">
+                Designed & Maintained by Parul Sihag
+            </p>
+            <p class="leading-relaxed text-center">
+                Parul Sihag is a dedicated student of the BFSc Batch 2022-26 at the College of Fisheries Sciences, CCSHAU, Hisar. With a passion for innovation in fisheries, Parul designed this scanner to support sustainable aquaculture practices. Contact: 9468486458 | Email: parulsihag@hau.ac.in
+            </p>
+            <p class="leading-relaxed mt-4 font-semibold text-center text-teal-700">
+                BFSc Batch 2022-26
+            </p>
+            
+            <p class="leading-relaxed mt-4 font-semibold text-center text-teal-700">
+                About College of Fisheries Sciences, CCSHAU, Hisar
+            </p>
+            <p class="leading-relaxed text-center">
+                The College of Fisheries Sciences at Chaudhary Charan Singh Haryana Agricultural University (CCSHAU), Hisar, is a premier institution dedicated to education, research, and innovation in fisheries and aquaculture. Known for its state-of-the-art facilities and expert faculty, it trains students to address challenges in sustainable aquatic resource management.
+            </p>
+        </div>
+    </div>
+</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Lucide icons
+            lucide.createIcons();
+
+            const sectionsToReveal = document.querySelectorAll('.reveal-on-scroll');
+            const designerModal = document.getElementById('designerModal');
+            const closeDesignerModal = document.getElementById('closeDesignerModal');
+            const scannerInfoModal = document.getElementById('scannerInfoModal');
+            const closeScannerInfoModal = document.getElementById('closeScannerInfoModal');
+            const navItems = document.querySelectorAll('.bottom-nav-item');
+            const topMenuButton = document.getElementById('topMenuButton');
+            const desktopMenuDropdown = document.getElementById('desktopMenuDropdown');
+            const openScannerModalFromBottomNav = document.getElementById('openScannerModalFromBottomNav');
+            const openScannerModalFromDesktopMenu = document.getElementById('openScannerModalFromDesktopMenu');
+            const openDesignerModalFromDesktopMenu = document.getElementById('openDesignerModalFromDesktopMenu');
+            const desktopMenuItems = document.querySelectorAll('.desktop-menu-item');
+
+
+            let scrolledPastFirstContentSection = false;
+            let minimumScrollDelayMet = false;
+
+            // Automatically open the designer modal on page load
+            designerModal.classList.add('show');
+
+            // Set a timeout for the 2-second delay flag for scroll reveal animations
+            setTimeout(() => {
+                minimumScrollDelayMet = true;
+                if (scrolledPastFirstContentSection) {
+                    revealSections();
+                }
+            }, 2000); // 2-second delay
+
+            const observerOptions = {
+                root: null, // Use the viewport as the container
+                rootMargin: '0px',
+                threshold: 0.1 // When 10% of the section is visible
+            };
+
+            const sectionObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Mark the flag if the scroll has reached beyond the first section (Section 1 is the first content section)
+                        // This prevents animations from firing before the initial delay or relevant scroll
+                        if (entry.target.id !== 'section1') {
+                            scrolledPastFirstContentSection = true;
+                        }
+
+                        if (minimumScrollDelayMet && scrolledPastFirstContentSection) {
+                            entry.target.classList.add('is-visible');
+                            observer.unobserve(entry.target); // Stop observing once visible
+                        }
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all sections (those with .reveal-on-scroll class)
+            sectionsToReveal.forEach(section => {
+                sectionObserver.observe(section);
+            });
+
+            // Function to reveal sections that haven't been revealed yet
+            function revealSections() {
+                sectionsToReveal.forEach(section => {
+                    if (!section.classList.contains('is-visible')) {
+                        const rect = section.getBoundingClientRect();
+                        // Check if section is significantly in view
+                        if (rect.top < window.innerHeight * 0.8 && rect.bottom > window.innerHeight * 0.2) {
+                            section.classList.add('is-visible');
+                            // Ensure observer stops for already visible sections
+                            const currentObserverEntry = sectionObserver.takeRecords().find(r => r.target === section);
+                            if (currentObserverEntry && currentObserverEntry.isIntersecting) {
+                                sectionObserver.unobserve(section);
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Scroll event listener for active nav item and reveal on scroll
+            window.addEventListener('scroll', () => {
+                // Handle reveal sections
+                if (minimumScrollDelayMet && scrolledPastFirstContentSection) {
+                    revealSections();
+                }
+
+                // Handle active navigation item for bottom nav
+                if (window.innerWidth < 768) { // Only update bottom nav on mobile
+                    let currentActiveSectionId = 'section1'; // Default to the first section
+                    let maxVisibleHeight = 0;
+
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const footerHeight = document.querySelector('.bottom-nav').offsetHeight;
+
+                    sectionsToReveal.forEach(section => {
+                        const rect = section.getBoundingClientRect();
+                        const viewportTop = headerHeight;
+                        const viewportBottom = window.innerHeight - footerHeight;
+
+                        const visibleTop = Math.max(rect.top, viewportTop);
+                        const visibleBottom = Math.min(rect.bottom, viewportBottom);
+                        const visibleHeight = visibleBottom - visibleTop;
+
+                        if (visibleHeight > maxVisibleHeight) {
+                            currentActiveSectionId = section.id;
+                            maxVisibleHeight = visibleHeight;
+                        }
+                    });
+
+                    navItems.forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('data-nav-section') === currentActiveSectionId) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+            });
+
+            // Designer Modal functionality
+            if (document.querySelector('footer span.font-semibold')) { // Check if the footer element exists
+                document.querySelector('footer span.font-semibold').addEventListener('click', () => {
+                    designerModal.classList.add('show');
+                });
+            }
+            closeDesignerModal.addEventListener('click', () => {
+                designerModal.classList.remove('show');
+            });
+            designerModal.addEventListener('click', (e) => {
+                if (e.target === designerModal) {
+                    designerModal.classList.remove('show');
+                }
+            });
+
+            // Scanner Info Modal functionality
+            openScannerModalFromBottomNav.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent default link behavior
+                scannerInfoModal.classList.add('show');
+            });
+            openScannerModalFromDesktopMenu.addEventListener('click', (e) => {
+                e.preventDefault();
+                scannerInfoModal.classList.add('show');
+                desktopMenuDropdown.classList.remove('show'); // Close desktop menu when modal opens
+            });
+            closeScannerInfoModal.addEventListener('click', () => {
+                scannerInfoModal.classList.remove('show');
+            });
+            scannerInfoModal.addEventListener('click', (e) => {
+                if (e.target === scannerInfoModal) {
+                    scannerInfoModal.classList.remove('show');
+                }
+            });
+            
+            // Open Designer Modal from Desktop Menu
+            openDesignerModalFromDesktopMenu.addEventListener('click', (e) => {
+                e.preventDefault();
+                designerModal.classList.add('show');
+                desktopMenuDropdown.classList.remove('show'); // Close desktop menu when modal opens
+            });
+
+
+            // Smooth scroll for bottom nav links (excluding scanner modal link)
+            navItems.forEach(item => {
+                if (item.id !== 'openScannerModalFromBottomNav') { // Exclude the scanner modal trigger
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            const headerOffset = document.querySelector('header').offsetHeight;
+                            const elementPosition = targetElement.getBoundingClientRect().top;
+                            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                            window.scrollTo({
+                                top: offsetPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                        // Update active class immediately on click
+                        navItems.forEach(nav => nav.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                }
+            });
+
+            // Desktop menu dropdown functionality
+            topMenuButton.addEventListener('click', () => {
+                desktopMenuDropdown.classList.toggle('show');
+            });
+
+            // Close desktop menu when clicking outside
+            window.addEventListener('click', (e) => {
+                if (!topMenuButton.contains(e.target) && !desktopMenuDropdown.contains(e.target)) {
+                    desktopMenuDropdown.classList.remove('show');
+                }
+            });
+
+            // Close desktop menu and scroll when desktop menu item is clicked
+            desktopMenuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Only prevent default and scroll if it's a section link, not a modal trigger
+                    if (this.getAttribute('href') && this.getAttribute('href').startsWith('#')) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href');
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            const headerOffset = document.querySelector('header').offsetHeight;
+                            const elementPosition = targetElement.getBoundingClientRect().top;
+                            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                            window.scrollTo({
+                                top: offsetPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                    desktopMenuDropdown.classList.remove('show'); // Close menu after click
+                });
+            });
+        });
+    </script>
+</body>
+</html>
